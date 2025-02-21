@@ -1,8 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { AppController } from '../src/app.controller';
 import { AppService } from '../src/app.service';
-import { ObjectA } from '../src/dto/object-a.dto';
-import { ObjectB } from '../src/dto/object-b.dto';
 
 describe('AppController', () => {
   let controller: AppController;
@@ -14,6 +12,7 @@ describe('AppController', () => {
       providers: [AppService]
     }).compile();
 
+    service = module.get<AppService>(AppService);
     controller = module.get<AppController>(AppController);
   });
 
@@ -21,35 +20,41 @@ describe('AppController', () => {
     expect(controller).toBeDefined();
   });
 
-  it('should trasform pt1', () => {
-    const A1 : ObjectA = {field1:'    tanti spazi   ', field2: -4, field3:''};
-    const B1: ObjectB = {field1:'TANTI SPAZI', field2: -9, field3:20, field4:'Default_Value', field5: false};
-    
-    const result = controller.transform(A1);
+  it('should filter with the key', () => {
+    const elenco=[
+      {name:'alessio', surname: 'verdi', age: 11},
+      {name:'mario', surname: 'rossi', age: 13},
+      {name:'luigi', surname: 'bianchi', age: 11}
+    ];
 
-    console.log(B1.field4);
-    expect(B1).toEqual(result);
+    const resultcalcolato=[
+      {name:'alessio', surname: 'verdi', age: 11},
+      {name:'luigi', surname: 'bianchi', age: 11}]
+
+    const result = service.filterByCondition(elenco,'age', 11);
+    const i=1; 
+
+    console.log(result);
+    console.log(resultcalcolato);
+
+    expect(result).toEqual(resultcalcolato);
    
   });
 
-  it('should transform pt2', () => {
-    const A2 : ObjectA = {field1:' PrOvAaA ', field2: 100, field3:'UPPERCASE OG'};
-    const B2: ObjectB = {field1:'PROVAAA', field2: 200, field3: 100, field4:'Prefix_uppercase og', field5: true};
-    
-    const result2 = controller.transform(A2);
+  it('should transform an array to sm else ', () => {
+    const inizio=[
+      {name:'alessio', surname: 'verdi', age: 11},
+      {name:'mario', surname: 'rossi', age: 13},
+      {name:'luigi', surname: 'bianchi', age: 11}
+    ];
 
-    console.log(B2.field4);
-    expect(B2).toEqual(result2);
+    let fine=['ALESSIO','MARIO','LUIGI']
+    const result = service.transformObjects(inizio, persona => (persona.name.toUpperCase()));
+   
+
+    console.log(inizio);
+    console.log(fine);
+
+    expect(result).toEqual(fine);
    
   });
-
-
-  it('should not fail', () =>{
-    const n2=3;
-    const n3=3;
-    expect(n2).toEqual(n3);
-  })
-
-  // TO DO: Test con valori diversi per ObjectA
-  // TO DO: Test con un ObjectA vuoto
-});
