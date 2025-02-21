@@ -33,6 +33,50 @@ export class AppService {
     // in questa parte il valore objectB ritorna booleano (TRUE or FALSE)
     return objectB;
   }
+
+ /**
+   * Filtra un array di oggetti in base a una condizione specifica
+   * @param items - Array di oggetti
+   * @param key - Chiave su cui filtrare
+   * @param value - Valore da confrontare
+   * @returns Array filtrato
+   */
+  filterByCondition<T extends Record<string, any>>(items: T[], key: keyof T, value: any): T[] {
+    return items.filter(item => item[key] === value);
+  }
+
+  /**
+   * Trasforma un array di oggetti in una nuova struttura
+   * @param items - Array di oggetti
+   * @param transformFn - Funzione che trasforma un oggetto
+   * @returns Array trasformato
+   */
+  transformObjects<T, U>(items: T[], transformFn: (item: T) => U): U[] {
+    return items.map(transformFn);
+  }
+
+  /**
+   * Converte i tipi di dati di un array
+   * @param items - Array di valori misti (stringhe, numeri, date, booleani)
+   * @param type - Tipo di conversione desiderata ('number', 'string', 'boolean', 'date')
+   * @returns Array con valori convertiti
+   */
+  convertDataTypes(items: any[], type: 'number' | 'string' | 'boolean' | 'date'): any[] {
+    return items.map(item => {
+      switch (type) {
+        case 'number':
+          return Number(item);
+        case 'string':
+          return String(item);
+        case 'boolean':
+          return Boolean(item);
+        case 'date':
+          return new Date(item);
+        default:
+          return item;
+      }
+    });
+  }
 }
 
 
